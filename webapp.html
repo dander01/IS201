@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Riddle Generator</title>
+  <nav>
+    <a href="scratch.html">Scratch Page</a>
+  </nav>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+      padding: 50px;
+    }
+
+    select, button, input {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+
+    #riddle-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      max-width: 600px;
+      margin-top: 30px;
+    }
+
+    #question {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    #answer {
+      font-size: 18px;
+      color: green;
+      display: none;
+    }
+
+    #feedback {
+      color: #d9534f;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .popup-button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #popup-answer {
+      color: #d9534f;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Riddle Generator</h1>
+
+  <label for="category">Choose a category:</label>
+  <select id="category" onchange="handleCategoryChange()">
+    <option value="nature">Nature</option>
+    <option value="logic">Logic</option>
+    <option value="wordplay">Wordplay</option>
+    <option value="funny">Funny</option>
+  </select>
+
+  <div id="riddle-box">
+    <div id="question">Your riddle will appear here.</div>
+
+    <input type="text" id="userGuess" placeholder="Your answer..." style="width: 60%;">
+    <br>
+    <button onclick="submitGuess()">Submit Answer</button>
+
+    <div id="feedback"></div>
+    <div id="answer">Correct answer: </div>
+  </div>
+
+  <div class="popup-overlay" id="popup" style="display: none;">
+    <div class="popup-content">
+      <h2 id="popup-title">Game Over!</h2>
+      <div id="popup-answer"></div>
+      <button class="popup-button" onclick="playAgainSameCategory()">Play Again (Same Category)</button>
+      <button class="popup-button" onclick="playAgainNewCategory()">Choose New Category</button>
+    </div>
+  </div>
+
+  <script>
+    const riddles = {
+      nature: [
+        { q: "What has roots as nobody sees, is taller than trees, up, up it goes, and yet never grows?", a: "mountain" },
+        { q: "I’m not alive, but I grow; I don’t have lungs, but I need air; what am I?", a: "fire" },
+        { q: "I have lakes with no water, mountains with no stone, and cities with no buildings. What am I?", a: "map" },
+        { q: "I fly without wings, I cry without eyes. Wherever I go, darkness flies. What am I?", a: "cloud" },
+        { q: "What can run but never walks, has a mouth but never talks, has a head but never weeps, and has a bed but never sleeps?", a: "river" }
+      ],
+      logic: [
+        { q: "The more you take, the more you leave behind. What am I?", a: "footsteps" },
+        { q: "I speak without a mouth and hear without ears. What am I?", a: "echo" },
+        { q: "There are two ducks in front of a duck, two ducks behind a duck and a duck in the middle. How many ducks are there?", a: "three" },
+        { q: "Five people were eating apples, A finished before B, but behind C. D finished before E, but behind B. What was the finishing order?", a: "cabde" },
+        { q: "What has many teeth but cannot bite?", a: "comb" }
+      ],
+      wordplay: [
+        { q: "What five-letter word becomes shorter when you add two letters to it?", a: "short" },
+        { q: "What comes once in a minute, twice in a moment, but never in a thousand years?", a: "m" },
+        { q: "I am an odd number. Take away a letter and I become even. What number am I?", a: "seven" },
+        { q: "What word contains 26 letters but only has three syllables?", a: "alphabet" },
+        { q: "What has a neck but no head?", a: "bottle" }
+      ],
+      funny: [
+        { q: "Why did the scarecrow win an award?", a: "because he was outstanding in his field" },
+        { q: "Why can’t your nose be 12 inches long?", a: "because then it would be a foot" },
+        { q: "What time is it when an elephant sits on a fence?", a: "time to fix the fence" },
+        { q: "Why do cats make good warriors?", a: "because they’ve got nine lives" },
+        { q: "What has one eye but can’t see?", a: "needle" }
+      ]
+    };
+
+    let currentRiddle = {};
+    let currentCategory = 'nature';
+    let tries = 0;
+    const maxTries = 3;
+
+    function generateRiddle(category = currentCategory) {
+      currentCategory = category;
+      const riddleList = riddles[category];
+      const randomIndex = Math.floor(Math.random() * riddleList.length);
+      currentRiddle = riddleList[randomIndex];
+      tries = 0;
+
+      document.getElementById("question").innerText = currentRiddle.q;
+      document.getElementById("userGuess").value = "";
+      document.getElementById("feedback").innerText = "";
+      document.getElementById("answer").style.display = "none";
+      document.getElementById("answer").innerText = "";
+    }
+
+    function handleCategoryChange() {
+      const newCategory = document.getElementById("category").value;
+      generateRiddle(newCategory);
+    }
+
+    function submitGuess() {
+      const guess = document.getElementById("userGuess").value.trim().toLowerCase();
+      const correct = currentRiddle.a.toLowerCase();
+
+      if (!guess) {
+        document.getElementById("feedback").innerText = "Please enter a guess.";
+        return;
+      }
+
+      tries++;
+
+      if (guess === correct) {
+        document.getElementById("feedback").innerText = "🎉 Correct!";
+        document.getElementById("answer").style.display = "none";
+        showPopup(true);
+      } else if (tries >= maxTries) {
+        document.getElementById("feedback").innerText = "❌ Out of tries.";
+        document.getElementById("answer").style.display = "none";
+        showPopup(false);
+      } else {
+        document.getElementById("feedback").innerText = `Incorrect. (${maxTries - tries} tries left)`;
+      }
+    }
+
+    function showPopup(isWinner) {
+      const popupTitle = document.getElementById("popup-title");
+      const popupAnswer = document.getElementById("popup-answer");
+
+      if (isWinner) {
+        popupTitle.innerText = "🎉 You Won!";
+        popupAnswer.innerText = "";
+      } else {
+        popupTitle.innerText = "❌ Game Over";
+        popupAnswer.innerText = `The answer was: ${currentRiddle.a}`;
+      }
+      
+      document.getElementById("popup").style.display = "flex";
+    }
+
+    function playAgainSameCategory() {
+      document.getElementById("popup").style.display = "none";
+      generateRiddle(currentCategory);
+    }
+
+    function playAgainNewCategory() {
+      document.getElementById("popup").style.display = "none";
+      generateRiddle();
+    }
+
+    generateRiddle();
+  </script>
+</body>
+</html>
+
+
+
+
+
