@@ -1,0 +1,102 @@
+/* General Styles */
+body {
+    font-family: Cambria, Georgia, 'Times New Roman', serif;
+    text-align: center;
+    background-color: #f0f8ff;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+  }
+  
+  .common {
+    text-align: center;
+  }
+  
+ /* Header */
+.header {
+  height: 60px;
+  background-color: black;
+  color: white;
+  line-height: 60px;
+  position: relative;
+  margin-top: 60px; /* added margin-top to create more space */
+}
+  
+  /* Navigation Styles */
+ /* Fixed Navigation */
+nav {
+  background-color: lightgray;
+  padding: 10px;
+  position: fixed;  /* makes the nav fixed */
+  top: 0;  /* position it at the top of the page */
+  width: 100%;  /* span the full width of the page */
+  z-index: 10;  /* ensures it stays above other elements */
+}
+  
+  nav a {
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+    padding: 15px;
+  }
+  
+  nav a:hover {
+    background-color: aliceblue;
+  }
+  
+  /* Main Body */
+  .mainbody {
+    background-color: #e0f0ff;
+    padding: 20px;
+  }
+  
+  .category-list {
+    list-style-position: inside;
+    padding-left: 0;
+    text-align: center;
+  }
+  
+  .category-list > li {
+    margin-bottom: 40px;
+  }
+  
+  .category-list h2 {
+    display: inline;
+    font-size: 1.8em;
+  }
+  
+  /* Player Lists */
+  .player-list {
+    list-style-type: decimal;
+    font-size: 18px;
+    padding-left: 0;
+    list-style-position: inside;
+  }
+  
+  .player-list li {
+    margin-bottom: 20px;
+  }
+  
+  /* Image Centering */
+  img {
+    display: block;
+    margin: 10px auto;
+  }
+  
+  /* Back Link */
+  .text-center {
+    margin-top: 40px;
+  }
+  
+  .back-link {
+    text-decoration: none;
+    color: #003366;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  .back-link:hover {
+    color: #0056b3;
+  }
+  

@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Riddle Generator</title>
-  <nav>
-    <a href="scratch.html">Scratch Page</a>
-  </nav>
+
+  <!-- CSS Styling -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -31,8 +30,18 @@
     }
 
     #question {
-      font-size: 20px;
-      margin-bottom: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0;
+      animation: fadeInText 1.5s ease-out forwards;
+    }
+
+    @keyframes fadeInText {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
     }
 
     #answer {
@@ -85,6 +94,11 @@
 
   <h1>Riddle Generator</h1>
 
+  <!-- Navigation -->
+  <nav>
+    <a href="scratch.html">Scratch Page</a>
+  </nav>
+
   <label for="category">Choose a category:</label>
   <select id="category" onchange="handleCategoryChange()">
     <option value="nature">Nature</option>
@@ -104,6 +118,7 @@
     <div id="answer">Correct answer: </div>
   </div>
 
+  <!-- Popup Overlay -->
   <div class="popup-overlay" id="popup" style="display: none;">
     <div class="popup-content">
       <h2 id="popup-title">Game Over!</h2>
@@ -113,6 +128,7 @@
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
     const riddles = {
       nature: [
